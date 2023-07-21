@@ -4,6 +4,6 @@ namespace InventoryDashboard.Api.Interfaces
 {
     public interface IProductInterface
     {
-       ICollection<Product> Products { get; }
+       ICollection<Product> GetProducts();
     }
 }
