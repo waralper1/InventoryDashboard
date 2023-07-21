@@ -23,15 +23,20 @@ namespace InventoryDashboard.Api.Repository
         {
             return _context.Products.Where(p => p.ProductId == id).FirstOrDefault();
         }
-        public Product GetProduct(string name)
-        {
-            return _context.Products.Where(p => p.Name == name).FirstOrDefault();
-        }
+        //public Product GetProduct(string name)
+        //{
+        //    return _context.Products.Where(p => p.Name == name).FirstOrDefault();
+        //}
         public Product GetProductDiscount(int id)
         {
-            return _context.Discounts.Where(p => p. == description).FirstOrDefault();// will continue later, will try a method to check discounts
+            _context.Products.Include(p => p.Discount).FirstOrDefault(p => p.ProductId == id);
+            return _context.Products.Include(p => p.Discount).FirstOrDefault(p => p.ProductId == id);
+
         }
 
-
+        public bool ProductExists(int id)
+        {
+            return _context.Products.Any(p => p.ProductId == id);
+        }
     }
 }
