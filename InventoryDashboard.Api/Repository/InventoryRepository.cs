@@ -25,5 +25,22 @@ namespace InventoryDashboard.Api.Repository
         {
             return _context.Inventories.Where(p => p.InventoryId == id).FirstOrDefault();
         }
+        public bool CreateInventory(Inventory inventory)
+        {
+            // Notes to self
+            //Change Tracker
+            //Tracker states: add, updating, modifying
+            //connected - disconnected
+            //Entity.State.Added 
+            //
+            _context.Add(inventory);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

@@ -45,5 +45,39 @@ namespace InventoryDashboard.Api.Controllers
             }
             return Ok(discount);
         }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult DiscountCategory([FromBody] DiscountDto discountCreate)
+        {
+            if (discountCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var discount = _discountInterface.GetDiscounts()
+                .Where(c => c.Name.Trim().ToUpper() == discountCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (discount != null)
+            {
+                ModelState.AddModelError("", "Discount already exists");
+                return StatusCode(442, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var discountMap = _mapper.Map<Discount>(discountCreate);
+
+            if (!_discountInterface.CreateDiscount(discountMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saveing pls check :( ");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Creation Succ ^_^");
+        }
     }
 }

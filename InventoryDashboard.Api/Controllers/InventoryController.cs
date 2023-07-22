@@ -45,5 +45,39 @@ namespace InventoryDashboard.Api.Controllers
             }
             return Ok(inventory);
         }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult InventoryCategory([FromBody] InventoryDto inventoryCreate)
+        {
+            if (inventoryCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var inventory = _inventoryInterface.GetInventories()
+                .Where(c => c.Name.Trim().ToUpper() == inventoryCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (inventory != null)
+            {
+                ModelState.AddModelError("", "Inventory already exists");
+                return StatusCode(442, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var inventoryMap = _mapper.Map<Inventory>(inventoryCreate);
+
+            if (!_inventoryInterface.CreateInventory(inventoryMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saveing pls check :( ");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Creation Succ ^_^");
+        }
     }
 }

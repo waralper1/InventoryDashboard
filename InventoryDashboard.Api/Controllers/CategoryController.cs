@@ -2,6 +2,7 @@
 using InventoryDashboard.Api.Dto;
 using InventoryDashboard.Api.Interfaces;
 using InventoryDashboard.Api.Models;
+using InventoryDashboard.Api.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryDashboard.Api.Controllers
@@ -28,7 +29,7 @@ namespace InventoryDashboard.Api.Controllers
             }
             return Ok(categories);
         }
-        [HttpGet("{id}/Product")]
+        [HttpGet("{id}/Product ")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
         public IActionResult GetProductsByCategory(int id)
         {
@@ -55,6 +56,40 @@ namespace InventoryDashboard.Api.Controllers
                 return BadRequest(ModelState);
             }
             return Ok(category);
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateCategory([FromBody] CategoryDto categoryCreate)
+        {
+            if (categoryCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var category = _categoryInterface.GetCategories()
+                .Where(c => c.Name.Trim().ToUpper() == categoryCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (category != null)
+            {
+                ModelState.AddModelError("", "Category already exists");
+                return StatusCode(442, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var categoryMap = _mapper.Map<Category>(categoryCreate);
+
+            if(!_categoryInterface.CreateCategory(categoryMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saveing pls check :( ");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Creation Succ ^_^");
         }
     }
 }

@@ -29,5 +29,23 @@ namespace InventoryDashboard.Api.Repository
         {
             return _context.Categories.Where(p => p.CategoryId == id).FirstOrDefault();
         }
+
+        public bool CreateCategory(Category category)
+        {
+            // Notes to self
+            //Change Tracker
+            //Tracker states: add, updating, modifying
+            //connected - disconnected
+            //Entity.State.Added 
+            //
+            _context.Add(category);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

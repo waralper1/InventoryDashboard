@@ -10,6 +10,7 @@ namespace InventoryDashboard.Api.Helper
         {
             CreateMap<Product, ProductDto>();
             CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryDto,Category>();
             CreateMap<Inventory, InventoryDto>();
             CreateMap<Variant, VariantDto>();
             CreateMap<Option, OptionDto>();

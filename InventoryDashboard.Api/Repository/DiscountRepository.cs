@@ -28,5 +28,22 @@ namespace InventoryDashboard.Api.Repository
         {
             return _context.Discounts.Any(p => p.DiscountId == id);
         }
+        public bool CreateDiscount(Discount discount)
+        {
+            // Notes to self
+            //Change Tracker
+            //Tracker states: add, updating, modifying
+            //connected - disconnected
+            //Entity.State.Added 
+            //
+            _context.Add(discount);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }
