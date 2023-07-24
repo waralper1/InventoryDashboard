@@ -27,12 +27,6 @@ namespace InventoryDashboard.Api.Repository
         }
         public bool CreateInventory(Inventory inventory)
         {
-            // Notes to self
-            //Change Tracker
-            //Tracker states: add, updating, modifying
-            //connected - disconnected
-            //Entity.State.Added 
-            //
             _context.Add(inventory);
             return Save();
         }
@@ -41,6 +35,11 @@ namespace InventoryDashboard.Api.Repository
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+        public bool UpdateInventory(Inventory inventory)
+        {
+            _context.Update(inventory);
+            return Save();
         }
     }
 }

@@ -30,12 +30,6 @@ namespace InventoryDashboard.Api.Repository
         }
         public bool CreateDiscount(Discount discount)
         {
-            // Notes to self
-            //Change Tracker
-            //Tracker states: add, updating, modifying
-            //connected - disconnected
-            //Entity.State.Added 
-            //
             _context.Add(discount);
             return Save();
         }
@@ -44,6 +38,11 @@ namespace InventoryDashboard.Api.Repository
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+        public bool UpdateDiscount(Discount discount)
+        {
+            _context.Update(discount);
+            return Save();
         }
     }
 }

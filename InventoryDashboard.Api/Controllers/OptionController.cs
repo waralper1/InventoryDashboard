@@ -79,5 +79,36 @@ namespace InventoryDashboard.Api.Controllers
 
             return Ok("Creation Succ ^_^");
         }
+        [HttpPut("optionId")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateOption(int optionId, [FromBody] OptionDto updatedOption)
+        {
+            if (updatedOption == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (optionId != updatedOption.OptionId)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!_optionInterface.OptionExists(optionId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var optionMap = _mapper.Map<Option>(updatedOption);
+            if (!_optionInterface.UpdateOption(optionMap))
+            {
+                ModelState.AddModelError("", "Something went wrong");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+
+        }
     }
 }

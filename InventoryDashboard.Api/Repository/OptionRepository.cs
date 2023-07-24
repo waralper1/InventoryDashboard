@@ -30,12 +30,6 @@ namespace InventoryDashboard.Api.Repository
         }
         public bool CreateOption(Option option)
         {
-            // Notes to self
-            //Change Tracker
-            //Tracker states: add, updating, modifying
-            //connected - disconnected
-            //Entity.State.Added 
-            //
             _context.Add(option);
             return Save();
         }
@@ -44,6 +38,11 @@ namespace InventoryDashboard.Api.Repository
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+        public bool UpdateOption(Option option)
+        {
+            _context.Update(option);
+            return Save();
         }
     }
 }

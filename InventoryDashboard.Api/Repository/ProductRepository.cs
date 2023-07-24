@@ -58,5 +58,14 @@ namespace InventoryDashboard.Api.Repository
             var saved = _context.SaveChanges();
             return saved > 0 ? true :false;
         }
+
+        public bool UpdateProduct(/*int discountId, int inventoryId, int categoryId,*/  int productId, Product product)
+        {
+            product.Discount = _context.Discounts.Where(d => d.DiscountId == product.DiscountId).FirstOrDefault();
+            product.Inventory = _context.Inventories.Where(d => d.InventoryId == product.InventoryId).FirstOrDefault();
+            product.Category = _context.Categories.Where(d => d.CategoryId == product.CategoryId).FirstOrDefault();
+            _context.Update(product);
+            return Save();
+        }
     }
 }

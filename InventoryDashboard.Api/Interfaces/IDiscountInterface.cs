@@ -8,6 +8,7 @@ namespace InventoryDashboard.Api.Interfaces
         Discount GetDiscount(int id);
         bool DiscountExists(int id);
         bool CreateDiscount(Discount discount);
+        bool UpdateDiscount(Discount discount);
         bool Save();
     }
 }

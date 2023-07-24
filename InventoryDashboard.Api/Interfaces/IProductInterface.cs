@@ -10,6 +10,7 @@ namespace InventoryDashboard.Api.Interfaces
         Product GetProductDiscount(int id);
         bool ProductExists(int id);
         bool CreateProduct(int discountId,int inventoryId,int categoryId,int variantId, Product product);
+        bool UpdateProduct(int productId, Product product);
         bool Save();
          
     }

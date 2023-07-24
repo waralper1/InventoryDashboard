@@ -87,5 +87,40 @@ namespace InventoryDashboard.Api.Controllers
 
             return Ok("Creation Succ ^_^");
         }
+        [HttpPut("variantId")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateVariant(  
+                                            int variantId,
+                                            [FromBody] VariantDto updatedVariant)
+        {
+            if (updatedVariant == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (variantId != updatedVariant.VariantId)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!_variantInterface.VariantExists(variantId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var variantMap = _mapper.Map<Variant>(updatedVariant);
+            if (!_variantInterface.UpdateVariant( 
+                                                variantId,
+                                                variantMap))
+            {
+                ModelState.AddModelError("", "Something went wrong");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+
+        }
     }
 }

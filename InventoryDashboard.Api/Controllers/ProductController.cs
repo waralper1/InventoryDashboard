@@ -124,5 +124,40 @@ namespace InventoryDashboard.Api.Controllers
 
             return Ok("Creation Succ ^_^");
         }
+        [HttpPut("productId")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateProduct(  
+                                            int productId,
+                                            [FromBody] ProductDto updatedProduct)
+        {
+            if (updatedProduct == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (productId != updatedProduct.ProductId)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!_productInterface.ProductExists(productId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var productMap = _mapper.Map<Product>(updatedProduct);
+            if (!_productInterface.UpdateProduct( 
+                                                productId,
+                                                productMap))
+            {
+                ModelState.AddModelError("", "Something went wrong");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+
+        }
     }
 }

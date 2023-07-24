@@ -91,7 +91,7 @@ namespace InventoryDashboard.Api.Controllers
 
             return Ok("Creation Succ ^_^");
         }
-        [HttpPut]
+        [HttpPut("categoryId")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -122,6 +122,27 @@ namespace InventoryDashboard.Api.Controllers
             return NoContent();
 
         }
+        [HttpDelete("{categoryId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            if (!_categoryInterface.CategoryExists(categoryId))
+            {
+                return NotFound();
+            }
+            var categoryToDelete = _categoryInterface.GetCategory(categoryId);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            if(!_categoryInterface.DeleteCategory(categoryToDelete))
+            {
+                ModelState.AddModelError("", "Something went wornk !");
+            }
 
+            return NoContent();
+        }
     }
 }

@@ -79,5 +79,36 @@ namespace InventoryDashboard.Api.Controllers
 
             return Ok("Creation Succ ^_^");
         }
+        [HttpPut("inventoryId")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateInventory(int inventoryId, [FromBody] InventoryDto updatedInventory)
+        {
+            if (updatedInventory == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (inventoryId != updatedInventory.InventoryId)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!_inventoryInterface.InventoryExists(inventoryId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var inventoryMap = _mapper.Map<Inventory>(updatedInventory);
+            if (!_inventoryInterface.UpdateInventory(inventoryMap))
+            {
+                ModelState.AddModelError("", "Something went wrong");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+
+        }
     }
 }

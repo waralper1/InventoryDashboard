@@ -79,5 +79,36 @@ namespace InventoryDashboard.Api.Controllers
 
             return Ok("Creation Succ ^_^");
         }
+        [HttpPut("discountId")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateDiscount(int discountId, [FromBody] DiscountDto updatedDiscount)
+        {
+            if (updatedDiscount == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (discountId != updatedDiscount.DiscountId)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!_discountInterface.DiscountExists(discountId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var discountMap = _mapper.Map<Discount>(updatedDiscount);
+            if (!_discountInterface.UpdateDiscount(discountMap))
+            {
+                ModelState.AddModelError("", "Something went wrong");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+
+        }
     }
 }
