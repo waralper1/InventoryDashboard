@@ -3,6 +3,7 @@ using InventoryDashboard.Api.Dto;
 using InventoryDashboard.Api.Interfaces;
 using InventoryDashboard.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace InventoryDashboard.Api.Controllers
 {
@@ -11,11 +12,18 @@ namespace InventoryDashboard.Api.Controllers
     public class ProductController : Controller
     {
         private readonly IProductInterface _productInterface;
+        private readonly IInventoryInterface _inventoryInterface;
+        private readonly IDiscountInterface _discountInterface;
+        private readonly ICategoryInterface _categoryInterface;
         private readonly IMapper _mapper;
-        public ProductController(IProductInterface productInterface,IMapper mapper)
+        public ProductController(IProductInterface productInterface, IInventoryInterface inventoryInterface, IDiscountInterface discountInterface, IMapper mapper, ICategoryInterface categoryInterface)
         {
             _productInterface = productInterface;
+            _inventoryInterface = inventoryInterface;
+            _discountInterface = discountInterface;
+
             _mapper = mapper;
+            _categoryInterface = categoryInterface;
         }
         [HttpGet]
         //[Route("api/GetProducts")]
@@ -77,6 +85,44 @@ namespace InventoryDashboard.Api.Controllers
                 return BadRequest(ModelState);
             }
             return Ok(product);
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateProduct([FromQuery] int discountId, [FromQuery] int inventoryId, [FromQuery] int categoryId, [FromQuery] int variantId,[FromBody] ProductDto productCreate)
+        {
+            if (productCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var product = _productInterface.GetProducts()
+                .Where(c => c.Name.Trim().ToUpper() == productCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (product != null)
+            {
+                ModelState.AddModelError("", "Product already exists");
+                return StatusCode(442, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var productMap = _mapper.Map<Product>(productCreate);
+            productMap.Discount = _discountInterface.GetDiscount(discountId);
+            productMap.Inventory = _inventoryInterface.GetInventory(inventoryId);
+            productMap.Category = _categoryInterface.GetCategory(categoryId);
+
+
+            if (!_productInterface.CreateProduct(discountId,inventoryId, categoryId, variantId,productMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saveing pls check :( ");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Creation Succ ^_^");
         }
     }
 }

@@ -45,5 +45,39 @@ namespace InventoryDashboard.Api.Controllers
             }
             return Ok(option);
         }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult OptionCategory([FromBody] OptionDto optionCreate)
+        {
+            if (optionCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var option = _optionInterface.GetOptions()
+                .Where(c => c.Name.Trim().ToUpper() == optionCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (option != null)
+            {
+                ModelState.AddModelError("", "Option already exists");
+                return StatusCode(442, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var optionMap = _mapper.Map<Option>(optionCreate);
+
+            if (!_optionInterface.CreateOption(optionMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saveing pls check :( ");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Creation Succ ^_^");
+        }
     }
 }

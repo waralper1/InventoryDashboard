@@ -7,5 +7,7 @@ namespace InventoryDashboard.Api.Interfaces
         ICollection<Variant> GetVariants();
         Variant GetVariant(int id);
         bool VariantExists(int id);
+        bool CreateVariant(int productId, int optionId, Variant variant);
+        bool Save();
     }
 }

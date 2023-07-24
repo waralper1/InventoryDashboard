@@ -12,5 +12,6 @@ namespace InventoryDashboard.Api.Models
         public Product Product { get; set; }
         [ForeignKey("OptionId")]
         public Option Option { get; set; }
+        public ICollection<ProductVariant> ProductVariants { get; set; }
     }
 }

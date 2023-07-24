@@ -2,6 +2,7 @@
 using InventoryDashboard.Api.Interfaces;
 using InventoryDashboard.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace InventoryDashboard.Api.Repository
 {
@@ -37,6 +38,25 @@ namespace InventoryDashboard.Api.Repository
         public bool ProductExists(int id)
         {
             return _context.Products.Any(p => p.ProductId == id);
+        }
+
+        public bool CreateProduct(int discountId, int inventoryId,int categoryId, int variantId, Product product)
+        {
+            var variantEntity = _context.Variants.Where(v => v.VariantId == variantId).FirstOrDefault();
+            var productVariant = new ProductVariant
+            {
+                Variant = variantEntity,
+                Product = product
+            };
+            _context.Add(productVariant);
+            _context.Add(product);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true :false;
         }
     }
 }

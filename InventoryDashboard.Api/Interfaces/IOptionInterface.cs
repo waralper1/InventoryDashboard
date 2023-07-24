@@ -7,5 +7,7 @@ namespace InventoryDashboard.Api.Interfaces
         ICollection<Option> GetOptions();
         Option GetOption(int id);
         bool OptionExists(int id);
+        bool CreateOption(Option option);
+        bool Save();
     }
 }

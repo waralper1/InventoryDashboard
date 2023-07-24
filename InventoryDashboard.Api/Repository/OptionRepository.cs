@@ -28,5 +28,22 @@ namespace InventoryDashboard.Api.Repository
         {
             return _context.Options.Any(p => p.OptionId == id);
         }
+        public bool CreateOption(Option option)
+        {
+            // Notes to self
+            //Change Tracker
+            //Tracker states: add, updating, modifying
+            //connected - disconnected
+            //Entity.State.Added 
+            //
+            _context.Add(option);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

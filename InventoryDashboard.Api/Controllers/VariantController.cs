@@ -11,10 +11,15 @@ namespace InventoryDashboard.Api.Controllers
     public class VariantController:Controller
     {
         private readonly IVariantInterface _variantInterface;
+        private readonly IOptionInterface _optionInterface;
+        private readonly IProductInterface _productInterface;
         private readonly IMapper _mapper;
-        public VariantController(IVariantInterface variantInterface, IMapper mapper)
+        public VariantController(IVariantInterface variantInterface, IMapper mapper
+            , IOptionInterface optionInterface, IProductInterface productInterface)
         {
             _variantInterface = variantInterface;
+            _optionInterface = optionInterface;
+            _productInterface = productInterface;
             _mapper = mapper;
         }
         [HttpGet]
@@ -44,6 +49,43 @@ namespace InventoryDashboard.Api.Controllers
                 return BadRequest(ModelState);
             }
             return Ok(variant);
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult VariantCategory([FromQuery]int productId, [FromQuery] int optionId,[FromBody] VariantDto variantCreate)
+        {
+            if (variantCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var variant = _variantInterface.GetVariants()
+                .Where(c => c.Price == variantCreate.Price && c.ProductId == variantCreate.ProductId && c.OptionId == variantCreate.OptionId)
+                .FirstOrDefault();
+
+            if (variant != null)
+            {
+                ModelState.AddModelError("", "Variant already exists");
+                return StatusCode(442, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var variantMap = _mapper.Map<Variant>(variantCreate);
+            variantMap.Option = _optionInterface.GetOption(optionId);
+            variantMap.Product = _productInterface.GetProduct(productId);
+
+            if (!_variantInterface.CreateVariant(productId, optionId, variantMap))
+            {
+                ModelState.AddModelError("", "Somthing went wrong while saveing pls check :( ");
+                return BadRequest(ModelState);
+            }
+
+            return Ok("Creation Succ ^_^");
         }
     }
 }

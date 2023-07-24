@@ -19,7 +19,7 @@ namespace InventoryDashboard.Api.Models
         public Category Category { get; set; }
         [ForeignKey("InventoryId")]
         public Inventory Inventory { get; set; }
-        public ICollection<Variant> Variants { get; set; }
+        public ICollection<ProductVariant> ProductVariants { get; set; }
 
     }
 }

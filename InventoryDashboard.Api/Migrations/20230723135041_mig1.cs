@@ -129,6 +129,28 @@ namespace InventoryDashboard.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductVariants",
+                columns: table => new
+                {
+                    prodId = table.Column<int>(type: "int", nullable: false),
+                    variId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductVariants", x => new { x.prodId, x.variId });
+                    table.ForeignKey(
+                        name: "FK_ProductVariants_Products_prodId",
+                        column: x => x.prodId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
+                    table.ForeignKey(
+                        name: "FK_ProductVariants_Variants_variId",
+                        column: x => x.variId,
+                        principalTable: "Variants",
+                        principalColumn: "VariantId");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
@@ -145,6 +167,11 @@ namespace InventoryDashboard.Api.Migrations
                 column: "InventoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductVariants_variId",
+                table: "ProductVariants",
+                column: "variId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Variants_OptionId",
                 table: "Variants",
                 column: "OptionId");
@@ -153,76 +180,14 @@ namespace InventoryDashboard.Api.Migrations
                 name: "IX_Variants_ProductId",
                 table: "Variants",
                 column: "ProductId");
-
-            // Create some sample categories
-            migrationBuilder.InsertData(
-                table: "Categories",
-                columns: new[] { "CategoryId", "Name", "Description" },
-                values: new object[,]
-                {
-                    { 1, "Electronics", "Electronic devices and gadgets" },
-                    { 2, "Clothing", "Clothing items for men and women" },
-                    { 3, "Home Appliances", "Appliances for your home" }
-                });
-
-            // Create some sample discounts
-            migrationBuilder.InsertData(
-                table: "Discounts",
-                columns: new[] { "DiscountId", "Name", "Description", "DiscountPercent", "Active" },
-                values: new object[,]
-                {
-                    { 1, "Summer Sale", "Get great discounts this summer", 15.0, true },
-                    { 2, "Clearance Sale", "Huge discounts on clearance items", 30.0, true },
-                    { 3, "Black Friday", "Massive discounts on Black Friday", 50.0, true }
-                });
-
-            // Create some sample inventories
-            migrationBuilder.InsertData(
-                table: "Inventories",
-                columns: new[] { "InventoryId", "Name", "Description" },
-                values: new object[,]
-                {
-                    { 1, "Warehouse A", "Main warehouse for storing inventory" },
-                    { 2, "Warehouse B", "Secondary warehouse for overflow inventory" }
-                });
-
-            // Create some sample options
-            migrationBuilder.InsertData(
-                table: "Options",
-                columns: new[] { "OptionId", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Color" },
-                    { 2, "Size" },
-                    { 3, "Capacity" }
-                });
-
-            // Create some sample products
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "ProductId", "Name", "Description", "CategoryId", "InventoryId", "DiscountId" },
-                values: new object[,]
-                {
-                    { 1, "Smartphone", "High-end smartphone", 1, 1, 1 },
-                    { 2, "T-Shirt", "Cotton T-shirt", 2, 1, 2 },
-                    { 3, "Refrigerator", "Double-door refrigerator", 3, 2, 3 }
-                });
-
-            // Create some sample variants
-            migrationBuilder.InsertData(
-                table: "Variants",
-                columns: new[] { "VariantId", "ProductId", "OptionId", "Price" },
-                values: new object[,]
-                {
-                    { 1, 1, 1, 799.99 },
-                    { 2, 2, 1, 19.99 },
-                    { 3, 3, 3, 999.99 }
-                });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ProductVariants");
+
             migrationBuilder.DropTable(
                 name: "Variants");
 
@@ -241,6 +206,5 @@ namespace InventoryDashboard.Api.Migrations
             migrationBuilder.DropTable(
                 name: "Inventories");
         }
-
     }
 }

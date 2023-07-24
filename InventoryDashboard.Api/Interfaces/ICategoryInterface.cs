@@ -9,6 +9,7 @@ namespace InventoryDashboard.Api.Interfaces
         bool CategoryExists(int id);
         IEnumerable<Product> GetProductsByCategory(int id);
         bool CreateCategory(Category category);
+        bool UpdateCategory(Category category);
         bool Save();
     }
 }

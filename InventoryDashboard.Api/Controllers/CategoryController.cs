@@ -91,5 +91,37 @@ namespace InventoryDashboard.Api.Controllers
 
             return Ok("Creation Succ ^_^");
         }
+        [HttpPut]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateCategory(int categoryId, [FromBody]CategoryDto updatedCategory)
+        {
+            if (updatedCategory == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if(categoryId != updatedCategory.CategoryId)
+            {
+                return BadRequest(ModelState);
+            }
+            if(!_categoryInterface.CategoryExists(categoryId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var categoryMap = _mapper.Map<Category>(updatedCategory);
+            if (!_categoryInterface.UpdateCategory(categoryMap))
+            {
+                ModelState.AddModelError("", "Something went wrong");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+
+        }
+
     }
 }

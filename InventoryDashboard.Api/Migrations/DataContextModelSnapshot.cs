@@ -3,7 +3,6 @@ using InventoryDashboard.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,11 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryDashboard.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230720131250_mig1")]
-    partial class mig1
+    partial class DataContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,6 +143,21 @@ namespace InventoryDashboard.Api.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("InventoryDashboard.Api.Models.ProductVariant", b =>
+                {
+                    b.Property<int>("prodId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("variId")
+                        .HasColumnType("int");
+
+                    b.HasKey("prodId", "variId");
+
+                    b.HasIndex("variId");
+
+                    b.ToTable("ProductVariants");
+                });
+
             modelBuilder.Entity("InventoryDashboard.Api.Models.Variant", b =>
                 {
                     b.Property<int>("VariantId")
@@ -199,6 +211,25 @@ namespace InventoryDashboard.Api.Migrations
                     b.Navigation("Inventory");
                 });
 
+            modelBuilder.Entity("InventoryDashboard.Api.Models.ProductVariant", b =>
+                {
+                    b.HasOne("InventoryDashboard.Api.Models.Product", "Product")
+                        .WithMany("ProductVariants")
+                        .HasForeignKey("prodId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("InventoryDashboard.Api.Models.Variant", "Variant")
+                        .WithMany("ProductVariants")
+                        .HasForeignKey("variId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Variant");
+                });
+
             modelBuilder.Entity("InventoryDashboard.Api.Models.Variant", b =>
                 {
                     b.HasOne("InventoryDashboard.Api.Models.Option", "Option")
@@ -208,7 +239,7 @@ namespace InventoryDashboard.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("InventoryDashboard.Api.Models.Product", "Product")
-                        .WithMany("Variants")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -220,7 +251,12 @@ namespace InventoryDashboard.Api.Migrations
 
             modelBuilder.Entity("InventoryDashboard.Api.Models.Product", b =>
                 {
-                    b.Navigation("Variants");
+                    b.Navigation("ProductVariants");
+                });
+
+            modelBuilder.Entity("InventoryDashboard.Api.Models.Variant", b =>
+                {
+                    b.Navigation("ProductVariants");
                 });
 #pragma warning restore 612, 618
         }
