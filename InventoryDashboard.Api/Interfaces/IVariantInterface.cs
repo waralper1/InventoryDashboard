@@ -9,6 +9,7 @@ namespace InventoryDashboard.Api.Interfaces
         bool VariantExists(int id);
         bool CreateVariant(int productId, int optionId, Variant variant);
         bool UpdateVariant(int variantId, Variant variant);
+        bool DeleteVariant(Variant variant);
         bool Save();
     }
 }

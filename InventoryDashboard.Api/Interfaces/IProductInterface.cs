@@ -11,6 +11,7 @@ namespace InventoryDashboard.Api.Interfaces
         bool ProductExists(int id);
         bool CreateProduct(int discountId,int inventoryId,int categoryId,int variantId, Product product);
         bool UpdateProduct(int productId, Product product);
+        bool DeleteProduct( Product product);
         bool Save();
          
     }

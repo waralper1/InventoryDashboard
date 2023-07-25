@@ -43,6 +43,12 @@ namespace InventoryDashboard.Api.Repository
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public bool DeleteVariant(Variant variant)
+        {
+            _context.Remove(variant);
+            return Save();
+        }
     }
 }
 

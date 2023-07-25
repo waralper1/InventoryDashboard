@@ -110,5 +110,27 @@ namespace InventoryDashboard.Api.Controllers
             return NoContent();
 
         }
+        [HttpDelete("{inventoryId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteInventory(int inventoryId)
+        {
+            if (!_inventoryInterface.InventoryExists(inventoryId))
+            {
+                return NotFound();
+            }
+            var inventoryToDelete = _inventoryInterface.GetInventory(inventoryId);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            if (!_inventoryInterface.DeleteInventory(inventoryToDelete))
+            {
+                ModelState.AddModelError("", "Something went wornk !");
+            }
+
+            return NoContent();
+        }
     }
 }

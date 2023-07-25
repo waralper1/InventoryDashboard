@@ -9,6 +9,7 @@ namespace InventoryDashboard.Api.Interfaces
         bool OptionExists(int id);
         bool CreateOption(Option option);
         bool UpdateOption(Option option);
+        bool DeleteOption(Option option);
         bool Save();
     }
 }

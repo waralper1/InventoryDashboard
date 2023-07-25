@@ -44,5 +44,11 @@ namespace InventoryDashboard.Api.Repository
             _context.Update(discount);
             return Save();
         }
+
+        public bool DeleteDiscount(Discount discount)
+        {
+            _context.Remove(discount);
+            return Save();
+        }
     }
 }

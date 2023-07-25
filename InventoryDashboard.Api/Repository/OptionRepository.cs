@@ -44,5 +44,11 @@ namespace InventoryDashboard.Api.Repository
             _context.Update(option);
             return Save();
         }
+
+        public bool DeleteOption(Option option)
+        {
+            _context.Remove(option);
+            return Save();
+        }
     }
 }

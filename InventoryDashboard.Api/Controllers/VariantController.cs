@@ -122,5 +122,27 @@ namespace InventoryDashboard.Api.Controllers
             return NoContent();
 
         }
+        [HttpDelete("{variantId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteVariant(int variantId)
+        {
+            if (!_variantInterface.VariantExists(variantId))
+            {
+                return NotFound();
+            }
+            var variantToDelete = _variantInterface.GetVariant(variantId);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            if (!_variantInterface.DeleteVariant(variantToDelete))
+            {
+                ModelState.AddModelError("", "Something went wornk !");
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -67,5 +67,11 @@ namespace InventoryDashboard.Api.Repository
             _context.Update(product);
             return Save();
         }
+
+        public bool DeleteProduct(Product product)
+        {
+            _context.Remove(product);
+            return Save();
+        }
     }
 }

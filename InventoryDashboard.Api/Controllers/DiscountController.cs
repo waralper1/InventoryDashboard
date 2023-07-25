@@ -110,5 +110,27 @@ namespace InventoryDashboard.Api.Controllers
             return NoContent();
 
         }
+        [HttpDelete("{discountId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteDiscount(int discountId)
+        {
+            if (!_discountInterface.DiscountExists(discountId))
+            {
+                return NotFound();
+            }
+            var discountToDelete = _discountInterface.GetDiscount(discountId);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            if (!_discountInterface.DeleteDiscount(discountToDelete))
+            {
+                ModelState.AddModelError("", "Something went wornk !");
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace InventoryDashboard.Api.Interfaces
         bool InventoryExists(int id);
         bool CreateInventory(Inventory inventory);
         bool UpdateInventory(Inventory inventory);
+        bool DeleteInventory(Inventory inventory);
         bool Save();
     }
 }
